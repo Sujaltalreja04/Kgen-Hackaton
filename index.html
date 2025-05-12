@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CricketGuru - Fantasy Cricket Assistant</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #1da14b;
+      --primary-light: #5ece8f;
+      --primary-dark: #146c32;
+      --secondary-color: #0077b6;
+      --accent-color: #ff9500;
+      --success-color: #06d6a0;
+      --error-color: #ef476f;
+      --bg-dark: #121212;
+      --bg-card: #1e1e1e;
+      --bg-hover: #2d2d2d;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --border-color: #333333;
+      --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      --gradient-secondary: linear-gradient(135deg, var(--secondary-color), #005c8f);
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --border-radius-sm: 8px;
+      --border-radius-md: 12px;
+      --border-radius-lg: 16px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .app-header {
+      background: var(--gradient-primary);
+      padding: var(--spacing-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--box-shadow);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .logo i {
+      font-size: 1.5rem;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #ffffff, #e0e0e0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .app-main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 300px;
+      background-color: var(--bg-card);
+      padding: var(--spacing-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+      border-right: 1px solid var(--border-color);
+    }
+
+    .matches-section, .suggested-topics {
+      background-color: var(--bg-hover);
+      border-radius: var(--border-radius-md);
+      padding: var(--spacing-md);
+    }
+
+    .section-title {
+      color: var(--primary-light);
+      font-size: 1rem;
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .match-cards {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .match-card {
+      background-color: var(--bg-dark);
+      border-radius: var(--border-radius-sm);
+      padding: var(--spacing-md);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--border-color);
+    }
+
+    .match-card:hover {
+      transform: translateY(-2px);
+      background-color: var(--bg-hover);
+      border-color: var(--primary-color);
+    }
+
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-xs);
+      font-weight: 600;
+    }
+
+    .match-details {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .topic-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+    }
+
+    .topic-chip {
+      background: var(--gradient-secondary);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .topic-chip:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.2);
+    }
+
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-dark);
+    }
+
+    .chat-header {
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-light);
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: var(--spacing-md);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .message {
+      max-width: 80%;
+      padding: var(--spacing-md);
+      border-radius: var(--border-radius-md);
+      animation: fadeIn 0.3s ease-out;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .user-message {
+      background: var(--gradient-secondary);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: var(--spacing-xs);
+    }
+
+    .bot-message {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      align-self: flex-start;
+      border-bottom-left-radius: var(--spacing-xs);
+      box-shadow: var(--box-shadow);
+    }
+
+    .message-time {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-top: var(--spacing-xs);
+      text-align: right;
+    }
+
+    .thinking {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .thinking-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--text-secondary);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    .thinking-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .thinking-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    .chat-input-container {
+      display: flex;
+      padding: var(--spacing-md);
+      gap: var(--spacing-sm);
+      border-top: 1px solid var(--border-color);
+      background-color: var(--bg-card);
+    }
+
+    #user-input {
+      flex: 1;
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-md);
+      padding: var(--spacing-md);
+      color: var(--text-primary);
+      resize: none;
+      transition: var(--transition);
+    }
+
+    #user-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(29, 161, 75, 0.2);
+    }
+
+    #send-button {
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius-md);
+      width: 48px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #send-button:hover {
+      filter: brightness(1.2);
+      transform: translateY(-1px);
+    }
+
+    #send-button i {
+      font-size: 1.2rem;
+    }
+
+    .player-card {
+      display: flex;
+      background-color: var(--bg-hover);
+      border-radius: var(--border-radius-sm);
+      padding: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+      gap: var(--spacing-md);
+      align-items: center;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+
+    .player-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-1px);
+    }
+
+    .player-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-color);
+    }
+
+    .player-info {
+      flex: 1;
+    }
+
+    .player-name {
+      font-weight: 600;
+      margin-bottom: var(--spacing-xs);
+      color: var(--text-primary);
+    }
+
+    .player-stats {
+      display: flex;
+      gap: var(--spacing-md);
+      font-size: 0.8rem;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-value {
+      font-weight: 600;
+      color: var(--primary-light);
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    .recommendation-label {
+      display: inline-block;
+      background-color: var(--success-color);
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: var(--spacing-sm);
+    }
+
+    .comparison-chart {
+      width: 100%;
+      margin-top: var(--spacing-md);
+      background-color: var(--bg-hover);
+      border-radius: var(--border-radius-sm);
+      padding: var(--spacing-md);
+      border: 1px solid var(--border-color);
+    }
+
+    .chart-title {
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+      text-align: center;
+      color: var(--text-primary);
+    }
+
+    .chart-bars {
+      display: flex;
+      height: 150px;
+      align-items: flex-end;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) 0;
+    }
+
+    .chart-bar {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bar {
+      width: 30px;
+      background: var(--gradient-primary);
+      border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+      transition: height 1s ease-out;
+    }
+
+    .bar-2 {
+      background: var(--gradient-secondary);
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .bar-label {
+      margin-top: var(--spacing-xs);
+      font-size: 0.8rem;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 992px) {
+      .app-main {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 200px;
+        order: 2;
+      }
+
+      .chat-container {
+        order: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .app-header {
+        padding: var(--spacing-sm);
+      }
+
+      .logo h1 {
+        font-size: 1.2rem;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+
+      .player-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .player-stats {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .chart-bars {
+        height: 120px;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg-hover);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo">
+        <i class="fas fa-cricket-ball"></i>
+        <h1>CricketGuru</h1>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <div class="sidebar">
+        <div class="matches-section">
+          <h3 class="section-title">
+            <i class="fas fa-calendar"></i>
+            Upcoming Matches
+          </h3>
+          <div class="match-cards" id="upcoming-matches">
+            <!-- Matches will be inserted here -->
+          </div>
+        </div>
+        <div class="suggested-topics">
+          <h3 class="section-title">
+            <i class="fas fa-lightbulb"></i>
+            Suggested Questions
+          </h3>
+          <div class="topic-chips">
+            <button class="topic-chip">Best captain pick today?</button>
+            <button class="topic-chip">Rohit vs Virat?</button>
+            <button class="topic-chip">Top bowler for Chennai?</button>
+            <button class="topic-chip">Fantasy scoring rules?</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-container">
+        <div class="chat-header">
+          <h2>Fantasy Cricket Assistant</h2>
+          <button id="clear-chat" aria-label="Clear chat">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <!-- Messages will be displayed here -->
+        </div>
+        <div class="chat-input-container">
+          <textarea id="user-input" placeholder="Ask about fantasy cricket picks, player form, match conditions..." rows="1"></textarea>
+          <button id="send-button" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Cricket data
+    const cricketData = {
+      upcomingMatches: [
+        {
+          team1: 'India',
+          team2: 'Australia',
+          venue: 'Sydney Cricket Ground',
+          date: '2025-01-15T09:00:00',
+          format: 'T20'
+        },
+        {
+          team1: 'England',
+          team2: 'South Africa',
+          venue: 'Lords',
+          date: '2025-01-18T14:00:00',
+          format: 'ODI'
+        }
+      ],
+      players: {
+        "Virat Kohli": {
+          role: "Batsman",
+          team: "India",
+          recentForm: "Excellent",
+          fantasyPoints: [120, 98, 145, 89, 156],
+          image: "https://images.pexels.com/photos/3851949/pexels-photo-3851949.jpeg"
+        },
+        "Rohit Sharma": {
+          role: "Batsman",
+          team: "India",
+          recentForm: "Good",
+          fantasyPoints: [145, 76, 112, 132, 90],
+          image: "https://images.pexels.com/photos/3154387/pexels-photo-3154387.jpeg"
+        }
+      }
+    };
+
+    // Utility functions
+    const utils = {
+      formatDate: (date) => {
+        const options = {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        };
+        return new Date(date).toLocaleDateString('en-US', options);
+      },
+
+      getCurrentTime: () => {
+        return utils.formatDate(new Date());
+      },
+
+      delay: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
+
+      escapeHtml: (html) => {
+        const div = document.createElement('div');
+        div.textContent = html;
+        return div.innerHTML;
+      }
+    };
+
+    // Chat interface
+    const chatInterface = {
+      elements: {
+        chatMessages: document.getElementById('chat-messages'),
+        userInput: document.getElementById('user-input'),
+        sendButton: document.getElementById('send-button'),
+        clearChat: document.getElementById('clear-chat'),
+        topicChips: document.querySelectorAll('.topic-chip')
+      },
+
+      init: function() {
+        this.setupEventListeners();
+        this.loadUpcomingMatches();
+        this.addWelcomeMessage();
+      },
+
+      setupEventListeners: function() {
+        this.elements.sendButton.addEventListener('click', () => this.sendMessage());
+        this.elements.userInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            this.sendMessage();
+          }
+        });
+
+        this.elements.clearChat.addEventListener('click', () => this.clearChat());
+
+        this.elements.topicChips.forEach(chip => {
+          chip.addEventListener('click', () => {
+            this.elements.userInput.value = chip.textContent;
+            this.sendMessage();
+          });
+        });
+      },
+
+      loadUpcomingMatches: function() {
+        const matchesContainer = document.getElementById('upcoming-matches');
+
+        cricketData.upcomingMatches.forEach(match => {
+          const matchCard = document.createElement('div');
+          matchCard.className = 'match-card';
+          matchCard.innerHTML = `
+            <div class="match-teams">${match.team1} vs ${match.team2}</div>
+            <div class="match-details">${match.venue}</div>
+            <div class="match-details">${utils.formatDate(match.date)} • ${match.format}</div>
+          `;
+
+          matchCard.addEventListener('click', () => {
+            this.elements.userInput.value = `Who should I pick for the ${match.team1} vs ${match.team2} match?`;
+            this.sendMessage();
+          });
+
+          matchesContainer.appendChild(matchCard);
+        });
+      },
+
+      addWelcomeMessage: function() {
+        this.addBotMessage({
+          text: `<strong>Welcome to CricketGuru!</strong><br><br>
+                I'm your fantasy cricket assistant. Ask me about:<br><br>
+                • Player recommendations<br>
+                • Team selection advice<br>
+                • Match conditions and pitch reports<br>
+                • Fantasy cricket rules and scoring<br>
+                • Player comparisons<br><br>
+                How can I help with your fantasy cricket decisions today?`,
+          type: 'text'
+        });
+      },
+
+      sendMessage: async function() {
+        const message = this.elements.userInput.value.trim();
+        if (!message) return;
+
+        this.addUserMessage(message);
+        this.elements.userInput.value = '';
+
+        this.showThinking();
+        await utils.delay(1000 + Math.random() * 1000);
+        this.hideThinking();
+
+        const response = await this.processQuery(message);
+        this.addBotMessage(response);
+      },
+
+      addUserMessage: function(message) {
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message user-message';
+        messageElement.innerHTML = `
+          <div>${utils.escapeHtml(message)}</div>
+          <div class="message-time">${utils.getCurrentTime()}</div>
+        `;
+        this.elements.chatMessages.appendChild(messageElement);
+        this.scrollToBottom();
+      },
+
+      addBotMessage: function(response) {
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message bot-message';
+
+        let content = '';
+        if (response.type === 'comparison') {
+          const p1 = response.data.player1;
+          const p2 = response.data.player2;
+          content = `
+            ${response.text}
+            <div class="player-card">
+              <img src="${p1.image}" alt="${p1.name}" class="player-img">
+              <div class="player-info">
+                <div class="player-name">${p1.name}</div>
+                <div class="player-stats">
+                  <div class="stat">
+                    <div class="stat-value">${p1.fantasyPoints[p1.fantasyPoints.length - 1]}</div>
+                    <div class="stat-label">Last Match</div>
+                  </div>
+                  <div class="stat">
+                    <div class="stat-value">${p1.recentForm}</div>
+                    <div class="stat-label">Form</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="player-card">
+              <img src="${p2.image}" alt="${p2.name}" class="player-img">
+              <div class="player-info">
+                <div class="player-name">${p2.name}</div>
+                <div class="player-stats">
+                  <div class="stat">
+                    <div class="stat-value">${p2.fantasyPoints[p2.fantasyPoints.length - 1]}</div>
+                    <div class="stat-label">Last Match</div>
+                  </div>
+                  <div class="stat">
+                    <div class="stat-value">${p2.recentForm}</div>
+                    <div class="stat-label">Form</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          content = response.text;
+        }
+
+        messageElement.innerHTML = `
+          ${content}
+          <div class="message-time">${utils.getCurrentTime()}</div>
+        `;
+
+        this.elements.chatMessages.appendChild(messageElement);
+        this.scrollToBottom();
+      },
+
+      showThinking: function() {
+        const thinkingElement = document.createElement('div');
+        thinkingElement.className = 'message bot-message thinking';
+        thinkingElement.id = 'thinking-indicator';
+        thinkingElement.innerHTML = `
+          <div class="thinking-dot"></div>
+          <div class="thinking-dot"></div>
+          <div class="thinking-dot"></div>
+        `;
+        this.elements.chatMessages.appendChild(thinkingElement);
+        this.scrollToBottom();
+      },
+
+      hideThinking: function() {
+        const thinkingElement = document.getElementById('thinking-indicator');
+        if (thinkingElement) {
+          thinkingElement.remove();
+        }
+      },
+
+      scrollToBottom: function() {
+        this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+      },
+
+      clearChat: function() {
+        this.elements.chatMessages.innerHTML = '';
+        this.addWelcomeMessage();
+      },
+
+      processQuery: async function(query) {
+        try {
+          const response = await fetch('http://localhost:5001/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: query }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+
+          const data = await response.json();
+          return { type: 'text', text: data.reply };
+        } catch (error) {
+          console.error('Error:', error);
+          return { type: 'text', text: 'Sorry, there was an error processing your request.' };
+        }
+      }
+    };
+
+    // Initialize chat interface
+    document.addEventListener('DOMContentLoaded', () => {
+      chatInterface.init();
+    });
+  </script>
+</body>
+</html>
