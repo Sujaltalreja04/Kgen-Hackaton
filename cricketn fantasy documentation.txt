@@ -1,0 +1,191 @@
+Great! Below is the **complete content** for your Fantasy Cricket Assistant project's documentation. You can copy this into a Word document (`.docx`) and style it as needed with headings, symbols, icons, or formatting.
+
+---
+
+# 🏏 Fantasy Cricket Assistant – Project Documentation
+
+---
+
+## 📘 Project Overview
+
+**Fantasy Cricket Assistant** is an AI-powered Flask web application designed to help users get real-time cricket insights, IPL match information, and expert team-building suggestions. Integrated with the **Ollama LLM**, **Sportmonks API**, and **web scraping**, it provides an intelligent fantasy cricket companion.
+
+---
+
+## 🚀 Features
+
+### 1. 🌐 Web Interface
+
+* `index.html` as the landing page (template-based).
+* Clean interface for chat and team suggestions.
+
+### 2. 🧠 AI-Powered Assistant (LLM)
+
+* Uses **Ollama** with the **LLaMA 3.2** model.
+* Context-aware responses combining:
+
+  * Real-time cricket scores
+  * IPL data
+  * Custom-trained FAQs
+
+### 3. 📡 Live Cricket Stats
+
+* Pulls recent match data from the **Sportmonks API**.
+* Displays team names, score, wickets, overs, and match date.
+
+### 4. 🏟️ IPL Match Insights (Web Scraping)
+
+* Scrapes IPL schedule and match data from `iplt20.com`.
+* Extracts teams, venues, dates, and match formats.
+
+### 5. 🧠 Custom Training Context
+
+* Users can "train" the assistant with their own Q\&A pairs.
+* Stores context in `training_data.json`.
+
+### 6. 🛠️ REST API Endpoints
+
+| Route    | Method | Description                     |
+| -------- | ------ | ------------------------------- |
+| `/`      | GET    | Renders home page               |
+| `/chat`  | POST   | Sends user message to assistant |
+| `/train` | POST   | Add custom Q\&A training data   |
+| `/stats` | GET    | Fetches live cricket stats      |
+| `/ipl`   | GET    | Fetches live IPL match info     |
+
+---
+
+## 🔁 Workflow
+
+### 1. User submits a message via `/chat`:
+
+* Assistant combines:
+
+  * Live stats from Sportmonks
+  * Scraped IPL details
+  * Trained Q\&A data
+* LLaMA generates a relevant, strategic team-building suggestion.
+
+### 2. Training new responses via `/train`:
+
+* User adds a `question` and `answer`.
+* Gets appended to `training_data.json` for context.
+
+---
+
+## 🧪 Technologies Used
+
+* **Python 3.12**
+* **Flask**
+* **Ollama** (Local LLM API)
+* **BeautifulSoup** (for IPL scraping)
+* **Sportmonks API** (for cricket data)
+* **HTML/CSS/JS** for frontend
+* **CORS** for cross-origin support
+
+---
+
+## ⚙️ How to Run
+
+### 🛠 Prerequisites:
+
+* Python 3.12+
+* Flask
+* `ollama` installed locally (`ollama run llama3`)
+* API key from Sportmonks
+
+### ▶️ Run App
+
+```bash
+python app.py
+```
+
+* Access app at: [http://localhost:5001](http://localhost:5001)
+
+---
+
+## 🔐 API Key Setup
+
+Create a `.env` file (or modify directly in code):
+
+```python
+SPORTMONKS_API_KEY = "your_api_key_here"
+```
+
+---
+
+## 💾 Files & Folders
+
+```
+├── app.py
+├── training_data.json
+├── templates/
+│   └── index.html
+├── static/
+│   └── (assets)
+```
+
+---
+
+## 📥 Sample Chat Prompt (Backend)
+
+```python
+prompt = f"""
+You are a Fantasy Cricket Assistant. Use the stats and knowledge below...
+
+Cricket Stats:
+{cricket_stats}
+
+IPL Stats:
+{ipl_stats}
+
+Previous Training:
+{training_context}
+
+User: {user_input}
+Assistant:"""
+```
+
+---
+
+## 🧠 Sample Training Format
+
+```json
+{
+  "question": "Who is the best all-rounder in 2023 IPL?",
+  "answer": "Ravindra Jadeja showed excellent performance in both batting and bowling."
+}
+```
+
+---
+
+## 🛡 Error Handling
+
+* Proper try/except for:
+
+  * API errors
+  * Web scraping issues
+  * JSON read/write exceptions
+
+---
+
+## 📌 Future Enhancements
+
+* 🧠 Train on full fantasy team stats
+* 🗣 Voice support for team suggestions
+* 📊 Data visualization of past performance
+* 📱 Mobile-friendly UI
+* 🧾 Download team suggestions as PDF
+
+---
+
+## 🙌 Credits
+
+* Developed by: **\[Hitanshu Patel, Sujal Talreja]**
+* LLM: **Ollama - LLaMA 3.2**
+* Data: **Sportmonks**, `iplt20.com`
+* Built using: Flask, Python, BeautifulSoup
+
+---
+
+Let me know if you'd like a version with symbols/icons (🧠, 📊, 📡) or any visual enhancements tailored for copy-paste into Word or Google Docs. Would you like me to add page breaks and headers too?
